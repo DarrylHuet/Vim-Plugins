@@ -1,86 +1,80 @@
-syntax on
-set noshowmode
-set scrolloff=5 " Keep 3 lines below and above the cursor
-call plug#begin('~/.vim/plugged')
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
 
-"Molokai theme
-Plug 'morhetz/gruvbox'
-"Vim-Go
-Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
-filetype plugin indent on
-"Deoplete, Deoplete-go, & Gocode
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-Plug 'zchee/deoplete-go'
-Plug 'nsf/gocode', { 'rtp': 'nvim', 'do': '~/.config/nvim/plugged/gocode/nvim/symlink.sh' }
-"Deoplete Jedi
-Plug 'zchee/deoplete-jedi'
-Plug 'davidhalter/jedi-vim'
-"Airline & Theme
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-"Fugitive
-Plug 'tpope/vim-fugitive'
-"Surround
-Plug 'tpope/vim-surround'
-"NERDtree
-Plug 'scrooloose/nerdtree'
-"GitGutter
-Plug 'airblade/vim-gitgutter'
-"SimpylFold
-Plug 'tmhedberg/simpylfold'
-"Ultisnips
-Plug 'SirVer/ultisnips'
-Plug 'honza/vim-snippets'
-"Tagbar
-Plug 'majutsushi/tagbar'
-"python-mode
-Plug 'klen/python-mode', { 'branch': 'develop' }
-"Kubernetes
-Plug 'andrewstuart/vim-kubernetes'
-"Tmuxline
-Plug 'edkolev/tmuxline.vim'
-"Docker
-Plug 'docker/docker'
-"Multi-Cursor
-Plug 'terryma/vim-multiple-cursors'
-"fxf
-Plug 'junegunn/fzf'
+set number
+
+call plug#begin('~/.vim/plugged')
+"AnyFold
+Plug 'pseewald/vim-anyfold'
 "Auto-pairs
 Plug 'jiangmiao/auto-pairs'
+"CoC
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+"Fugitive
+Plug 'tpope/vim-fugitive'
+"Fuzzy Finder
+Plug 'junegunn/fzf'
+"Julia
+Plug 'julialang/julia-vim'
+"Lightline
+Plug 'itchyny/lightline.vim'
+"Nerd Commenter
+Plug 'preservim/nerdcommenter'
+"NERDtree
+Plug 'scrooloose/nerdtree'
+"Rust
+Plug 'rust-lang/rust.vim'
+"LanguageClient
+Plug 'autozimu/LanguageClient-neovim', {
+    \ 'branch': 'next',
+    \ 'do': './install.sh'
+    \ }
+"Tmuxline
+Plug 'edkolev/tmuxline.vim'
+"Multi-Cursor
+Plug 'terryma/vim-multiple-cursors'
+"Go
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+"Gitgutter
+Plug 'airblade/vim-gitgutter'
+"Rainbow
+Plug 'frazrepo/vim-rainbow'
+"Tagbar
+Plug 'majutsushi/tagbar'
 "TMUX -Nav
 Plug 'christoomey/vim-tmux-navigator'
-
+"Tmuxline
+Plug 'edkolev/tmuxline.vim'
 call plug#end()
 
 
 "------------------------------------------------------------------------------
-" Deoplete
+"Anyfold
 "------------------------------------------------------------------------------
-" Run deoplete.nvim automatically
-let g:deoplete#enable_at_startup = 1
-" deoplete-go settings
-let g:deoplete#sources#go#gocode_binary = $GOPATH.'/bin/gocode'
-let g:deoplete#sources#go#sort_class = ['package', 'func', 'type', 'var', 'const']
+filetype plugin indent on " required
+syntax on                 " required
+
+autocmd Filetype * AnyFoldActivate               " activate for all filetypes
+" or
+autocmd Filetype <your-filetype> AnyFoldActivate " activate for a specific filetype
+
+set foldlevel=0  " close all folds
+" or
+set foldlevel=99 " Open all folds
 
 "------------------------------------------------------------------------------
-"Deoplete & Jedi
+"Indent-guide
 "------------------------------------------------------------------------------
-let g:deoplete#sources#jedi#statement_length = 50
-let g:deoplete#sources#jedi#enable_typeinfo = 1
-let g:deoplete#sources#jedi#show_docstring = 0
-let g:deoplete#sources#jedi#ignore_errors = 0
+let g:indent_guides_enable_on_vim_startup = 1
 "------------------------------------------------------------------------------
-" Airline & Theme
+"Lightline
 "------------------------------------------------------------------------------
-let g:rehash256 = 1
-let g:airline_theme='gruvbox'
-set background=dark
-set number
-colorscheme gruvbox
-let g:gruvbox_italic=1
-
-set laststatus=2
-
+if !has('gui_running')
+  set t_Co=256
+endif
 "------------------------------------------------------------------------------
 "NERDtree
 "------------------------------------------------------------------------------
@@ -93,49 +87,6 @@ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isT
 map <C-b> :NERDTreeToggle<CR>
 
 "------------------------------------------------------------------------------
-" GitGutter
+"Vim-rainbow
 "------------------------------------------------------------------------------
-let g:gitgutter_max_signs = 500  " default value
-
-"------------------------------------------------------------------------------
-" SimpylFold
-"------------------------------------------------------------------------------
-let g:SimpylFold_docstring_preview = 1
-
-
-"------------------------------------------------------------------------------
-"Ultisnips
-"------------------------------------------------------------------------------
-let g:UltiSnipsExpandTrigger="<tab>"
-let g:UltiSnipsJumpForwardTrigger="<c-b>"
-let g:UltiSnipsJumpBackwardTrigger="<c-z>"
-
-
-"------------------------------------------------------------------------------
-" Tagbar
-"------------------------------------------------------------------------------
-nmap <8> :TagbarToggle<CR>
-
-
-"------------------------------------------------------------------------------
-" Python-mode
-"------------------------------------------------------------------------------
-let g:pymode_python = 'python3'
-
-
-let g:tmuxline_powerline_separators = 0
-let g:airline#extensions#tmuxline#enabled = 0
-
-
-let g:AutoPairsFlyMode = ''
-let g:AutoPairsShortcutToggle = ''
-
-
-
-let g:tmux_navigator_no_mappings = 1
-
-nnoremap <silent> {Left-Mapping} :TmuxNavigateLeft<cr>
-nnoremap <silent> {Down-Mapping} :TmuxNavigateDown<cr>
-nnoremap <silent> {Up-Mapping} :TmuxNavigateUp<cr>
-nnoremap <silent> {Right-Mapping} :TmuxNavigateRight<cr>
-nnoremap <silent> {Previous-Mapping} :TmuxNavigatePrevious<cr>
+let g:rainbow_active = 1
